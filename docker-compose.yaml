@@ -1,0 +1,41 @@
+version: '3.0'
+
+services:
+  logstash:
+    build:
+      context: ./logstash/
+    image: logstash
+    container_name: logstash
+    hostname: localhost
+    ports:
+      - 5010:5010
+      - 5044:5044
+      - 9600:9600
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    build:
+      context: ./elasticsearch/
+    image: elasticsearch
+    container_name: elasticsearch
+    hostname: localhost
+    mem_reservation: 2056M
+    environment:
+      - discovery.type=single-node
+    expose:
+      - "9200"
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  kibana:
+    build:
+      context: ./kibana/
+    image: kibana
+    container_name: kibana
+    hostname: localhost
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
